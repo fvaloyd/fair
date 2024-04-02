@@ -16,20 +16,19 @@ public sealed class Adjuster
         foreach (var mem in group.Members)
         {
             var contributions = group.Contributions.Where(c => c.MemberId == mem.Id);
-            var memGoal = CalcMemberGoal(fairGoal);
             float totalSpent = contributions.Any() ? contributions.Sum(c => c.Spent) : 0;
 
-            if (totalSpent == memGoal)
+            if (totalSpent == fairGoal)
                 continue;
 
             var adjust = new Adjust()
             {
                 GroupId = group.Id,
                 MemberId = mem.Id,
-                Amount = totalSpent < memGoal
-                    ? (float)Math.Round(memGoal - totalSpent, 2)
-                    : (float)Math.Round(totalSpent - memGoal, 2),
-                Action = totalSpent < memGoal
+                Amount = totalSpent < fairGoal
+                    ? (float)Math.Round(fairGoal - totalSpent, 2)
+                    : (float)Math.Round(totalSpent - fairGoal, 2),
+                Action = totalSpent < fairGoal
                     ? AdjustAction.Compensate
                     : AdjustAction.Receive
             };
@@ -39,9 +38,6 @@ public sealed class Adjuster
 
         return adjusts;
     }
-
-    private static float CalcMemberGoal(float fairGoal)
-        => (float)Math.Round(fairGoal * (100 / HUNDRED_PERCENT), 2);
 
     private static float CalcFairGoal(Group group)
         => (float)group.Contributions.Sum(mc => mc.Spent) / group.Members.Select(c => c.Id).Distinct().Count();
