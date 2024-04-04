@@ -2,8 +2,6 @@ namespace Collaboration;
 
 public sealed class Adjuster
 {
-    private const float HUNDRED_PERCENT = 100;
-
     public List<Adjust> Adjust(Group group)
     {
         if (group.Contributions.Count == 0)
@@ -15,8 +13,8 @@ public sealed class Adjuster
 
         foreach (var mem in group.Members)
         {
-            var contributions = group.Contributions.Where(c => c.MemberId == mem.Id);
-            float totalSpent = contributions.Any() ? contributions.Sum(c => c.Spent) : 0;
+            var memContributions = group.Contributions.Where(c => c.MemberId == mem.Id);
+            float totalSpent = memContributions.Any() ? memContributions.Sum(c => c.Spent) : 0;
 
             if (totalSpent == fairGoal)
                 continue;
@@ -40,5 +38,5 @@ public sealed class Adjuster
     }
 
     private static float CalcFairGoal(Group group)
-        => (float)group.Contributions.Sum(mc => mc.Spent) / group.Members.Select(c => c.Id).Distinct().Count();
+        => group.GetTotalSpent() / group.GetTotalMembers();
 }

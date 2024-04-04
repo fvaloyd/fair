@@ -10,7 +10,7 @@ public class AdjusterTests
         var m1 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m1" };
         var m2 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m2" };
         var m3 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m3" };
-        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new List<Member>() { m1, m2, m3 } };
+        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new HashSet<Member>() { m1, m2, m3 } };
 
         List<Adjust> adjusts = _adjuster.Adjust(g);
 
@@ -23,11 +23,11 @@ public class AdjusterTests
         var m1 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m1" };
         var m2 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m2" };
         var m3 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m3" };
-        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new List<Member>() { m1, m2, m3 } };
+        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new HashSet<Member>() { m1, m2, m3 } };
 
         var c1 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m1.Id, Spent = 2000 };
         var c2 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m2.Id, Spent = 2000 };
-        g.Contributions.AddRange(new List<Contribution>() { c1, c2 });
+        g.AddContributions(new Contribution[] { c1, c2 });
 
         List<Adjust> adjusts = _adjuster.Adjust(g);
 
@@ -50,12 +50,12 @@ public class AdjusterTests
         var m1 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m1" };
         var m2 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m2" };
         var m3 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m3" };
-        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new List<Member>() { m1, m2, m3 } };
+        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new HashSet<Member>() { m1, m2, m3 } };
 
         var c1 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m1.Id, Spent = 2000 };
         var c2 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m2.Id, Spent = 1800 };
         var c3 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m3.Id, Spent = 1600 };
-        g.Contributions.AddRange(new List<Contribution>() { c1, c2, c3 });
+        g.AddContributions(new Contribution[] { c1, c2, c3 });
 
         List<Adjust> adjusts = _adjuster.Adjust(g);
 

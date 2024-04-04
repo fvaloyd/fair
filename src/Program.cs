@@ -7,9 +7,23 @@ app.Run();
 
 public sealed class Group
 {
-    public List<Member> Members { get; set; } = new();
-    public List<Contribution> Contributions { get; set; } = new();
-    public string Id { get; set; } = string.Empty;
+    public HashSet<Member> Members { get; init; } = new();
+    public HashSet<Contribution> Contributions { get; init; } = new();
+    public string Id { get; init; } = string.Empty;
+
+    public int GetTotalMembers()
+        => Members.Count;
+
+    public float GetTotalSpent()
+        => Contributions.Sum(c => c.Spent);
+
+    public void AddContributions(Contribution[] contributions)
+    {
+        foreach (var cont in contributions)
+        {
+            Contributions.Add(cont);
+        }
+    }
 }
 
 public sealed class Member
