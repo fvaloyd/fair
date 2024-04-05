@@ -1,3 +1,6 @@
+using Fair;
+using AdjustType = Fair.Adjust;
+
 namespace Collaboration;
 
 public sealed class Adjuster
@@ -19,17 +22,15 @@ public sealed class Adjuster
             if (totalSpent == fairGoal)
                 continue;
 
-            var adjust = new Adjust()
-            {
-                GroupId = group.Id,
-                MemberId = mem.Id,
-                Amount = totalSpent < fairGoal
-                    ? (float)Math.Round(fairGoal - totalSpent, 2)
-                    : (float)Math.Round(totalSpent - fairGoal, 2),
-                Action = totalSpent < fairGoal
-                    ? AdjustAction.Compensate
-                    : AdjustAction.Receive
-            };
+            var adjust = AdjustType.Create(
+                    group.Id,
+                    mem.Id,
+                    totalSpent < fairGoal
+                        ? (float)Math.Round(fairGoal - totalSpent, 2)
+                        : (float)Math.Round(totalSpent - fairGoal, 2),
+                    totalSpent < fairGoal
+                        ? AdjustAction.Compensate
+                        : AdjustAction.Receive);
 
             adjusts.Add(adjust);
         }

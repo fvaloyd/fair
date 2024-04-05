@@ -1,3 +1,5 @@
+using Fair;
+
 namespace Collaboration.Tests;
 
 public class AdjusterTests
@@ -7,11 +9,10 @@ public class AdjusterTests
     [Fact]
     public void WithAGroupWithNoContributions_ShouldReturnAnEmptyCollection()
     {
-        var m1 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m1" };
-        var m2 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m2" };
-        var m3 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m3" };
-        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new HashSet<Member>() { m1, m2, m3 } };
-
+        var m1 = Member.Create("m1");
+        var m2 = Member.Create("m2");
+        var m3 = Member.Create("m3");
+        var g = Group.Create(new Member[] { m1, m2, m3 }, Enumerable.Empty<Contribution>().ToArray());
         List<Adjust> adjusts = _adjuster.Adjust(g);
 
         Assert.Empty(adjusts);
@@ -20,13 +21,13 @@ public class AdjusterTests
     [Fact]
     public void WithAMemberWithNoContribution_ShouldReturnACollectionWithTheCorrespondingAdjustments()
     {
-        var m1 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m1" };
-        var m2 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m2" };
-        var m3 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m3" };
-        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new HashSet<Member>() { m1, m2, m3 } };
+        var m1 = Member.Create("m1");
+        var m2 = Member.Create("m2");
+        var m3 = Member.Create("m3");
+        var g = Group.Create(new Member[] { m1, m2, m3 }, Enumerable.Empty<Contribution>().ToArray());
 
-        var c1 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m1.Id, Spent = 2000 };
-        var c2 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m2.Id, Spent = 2000 };
+        var c1 = Contribution.Create("Supermarket", 2000, g.Id, m1.Id);
+        var c2 = Contribution.Create("Supermarket", 2000, g.Id, m2.Id);
         g.AddContributions(new Contribution[] { c1, c2 });
 
         List<Adjust> adjusts = _adjuster.Adjust(g);
@@ -47,14 +48,14 @@ public class AdjusterTests
     [Fact]
     public void ForMembersWithDiffentContribution_ShouldReturnACollectionWithTheCorrespondingAdjustments()
     {
-        var m1 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m1" };
-        var m2 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m2" };
-        var m3 = new Member() { Id = Guid.NewGuid().ToString(), Name = "m3" };
-        var g = new Group() { Id = Guid.NewGuid().ToString(), Members = new HashSet<Member>() { m1, m2, m3 } };
+        var m1 = Member.Create("m1");
+        var m2 = Member.Create("m2");
+        var m3 = Member.Create("m3");
+        var g = Group.Create(new Member[] { m1, m2, m3 }, Enumerable.Empty<Contribution>().ToArray());
 
-        var c1 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m1.Id, Spent = 2000 };
-        var c2 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m2.Id, Spent = 1800 };
-        var c3 = new Contribution() { Name = "Supermarket", GroupId = g.Id, MemberId = m3.Id, Spent = 1600 };
+        var c1 = Contribution.Create("Supermarket", 2000, g.Id, m1.Id);
+        var c2 = Contribution.Create("Supermarket", 1800, g.Id, m2.Id);
+        var c3 = Contribution.Create("Supermarket", 1600, g.Id, m3.Id);
         g.AddContributions(new Contribution[] { c1, c2, c3 });
 
         List<Adjust> adjusts = _adjuster.Adjust(g);
