@@ -27,6 +27,18 @@ public sealed class Group
             Contributions.Add(cont);
         }
     }
+
+    public void AddContribution(Contribution contribution)
+    {
+        if (!_members.Any(m => m.Id == contribution.MemberId))
+            throw new Exception("That member is not part of this group.");
+        _contributions.Add(contribution);
+    }
+
+    public void IntegrateMember(Member member)
+    {
+        _members.Add(member);
+    }
 }
 
 public sealed record GroupId(string Value);
