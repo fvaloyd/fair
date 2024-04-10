@@ -1,15 +1,16 @@
-namespace Fair;
+namespace Collaboration;
 
 public sealed class Group
 {
     private readonly HashSet<Member> _members = new();
     public IReadOnlySet<Member> Members => _members;
     private readonly HashSet<Contribution> _contributions = new();
-    public HashSet<Contribution> Contributions => _contributions;
+    public HashSet<Contribution> Contributions => _contributions.Where(c => c.Period == CurrentPeriod).ToHashSet();
+    public Period CurrentPeriod { get; private set; }
     public GroupId Id { get; }
 
     private Group(Member[] members, Contribution[] contributions)
-        => (Id, _members, _contributions) = (new(Guid.NewGuid().ToString()), members.ToHashSet(), contributions.ToHashSet());
+        => (Id, _members, _contributions, CurrentPeriod) = (new(Guid.NewGuid().ToString()), members.ToHashSet(), contributions.ToHashSet(), Period.CreateCurrent());
 
     public static Group Create(Member[] members, Contribution[] contributions)
         => new(members, contributions);
@@ -24,7 +25,7 @@ public sealed class Group
     {
         foreach (var cont in contributions)
         {
-            Contributions.Add(cont);
+            _contributions.Add(cont);
         }
     }
 
@@ -39,6 +40,12 @@ public sealed class Group
     {
         _members.Add(member);
     }
+
+    public void ClosePeriod()
+        => CurrentPeriod = Period.Empty();
+
+    public void StartNewPeriod()
+        => CurrentPeriod = Period.CreateCurrent();
 }
 
 public sealed record GroupId(string Value);

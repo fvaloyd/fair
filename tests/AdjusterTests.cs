@@ -1,5 +1,3 @@
-using Fair;
-
 namespace Collaboration.Tests;
 
 public class AdjusterTests
@@ -26,8 +24,8 @@ public class AdjusterTests
         var m3 = Member.Create("m3");
         var g = Group.Create(new Member[] { m1, m2, m3 }, Enumerable.Empty<Contribution>().ToArray());
 
-        var c1 = Contribution.Create("Supermarket", 2000, g.Id, m1.Id);
-        var c2 = Contribution.Create("Supermarket", 2000, g.Id, m2.Id);
+        var c1 = Contribution.Create("Supermarket", 2000, g.Id, m1.Id, g.CurrentPeriod);
+        var c2 = Contribution.Create("Supermarket", 2000, g.Id, m2.Id, g.CurrentPeriod);
         g.AddContributions(new Contribution[] { c1, c2 });
 
         List<Adjust> adjusts = _adjuster.Adjust(g);
@@ -53,9 +51,9 @@ public class AdjusterTests
         var m3 = Member.Create("m3");
         var g = Group.Create(new Member[] { m1, m2, m3 }, Enumerable.Empty<Contribution>().ToArray());
 
-        var c1 = Contribution.Create("Supermarket", 2000, g.Id, m1.Id);
-        var c2 = Contribution.Create("Supermarket", 1800, g.Id, m2.Id);
-        var c3 = Contribution.Create("Supermarket", 1600, g.Id, m3.Id);
+        var c1 = Contribution.Create("Supermarket", 2000, g.Id, m1.Id, g.CurrentPeriod);
+        var c2 = Contribution.Create("Supermarket", 1800, g.Id, m2.Id, g.CurrentPeriod);
+        var c3 = Contribution.Create("Supermarket", 1600, g.Id, m3.Id, g.CurrentPeriod);
         g.AddContributions(new Contribution[] { c1, c2, c3 });
 
         List<Adjust> adjusts = _adjuster.Adjust(g);

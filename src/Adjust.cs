@@ -1,4 +1,4 @@
-namespace Fair;
+namespace Collaboration;
 
 public sealed class Adjust
 {

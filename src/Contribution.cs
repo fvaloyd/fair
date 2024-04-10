@@ -1,4 +1,4 @@
-namespace Fair;
+namespace Collaboration;
 
 public sealed class Contribution
 {
@@ -7,12 +7,13 @@ public sealed class Contribution
     public float Spent { get; }
     public GroupId GroupId { get; }
     public MemberId MemberId { get; }
+    public Period Period { get; }
 
-    private Contribution(string name, float spent, GroupId groupId, MemberId memberId)
-        => (Id, Name, Spent, GroupId, MemberId) = (new(Guid.NewGuid().ToString()), name, spent, groupId, memberId);
+    private Contribution(string name, float spent, GroupId groupId, MemberId memberId, Period period)
+        => (Id, Name, Spent, GroupId, MemberId, Period) = (new(Guid.NewGuid().ToString()), name, spent, groupId, memberId, period);
 
-    public static Contribution Create(string name, float spent, GroupId groupId, MemberId memberId)
-        => new(name, spent, groupId, memberId);
+    public static Contribution Create(string name, float spent, GroupId groupId, MemberId memberId, Period period)
+        => new(name, spent, groupId, memberId, period);
 }
 
 public sealed record ContributionId(string Value);

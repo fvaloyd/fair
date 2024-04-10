@@ -1,5 +1,4 @@
 using Collaboration;
-using Fair;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +36,18 @@ app.MapPost("/groups/{groupId}/adjust-contributions", (
     });
     return Results.Ok(adjustsResponse);
 });
+app.MapPost("/groups/{groupId}/close-period", (string groupId, GroupStore gStore) =>
+{
+    var group = gStore.GetById(groupId);
+    group.ClosePeriod();
+    return Results.Ok();
+});
+app.MapPost("/groups/{groupId}/start-period", (string groupId, GroupStore gStore) =>
+{
+    var group = gStore.GetById(groupId);
+    group.StartNewPeriod();
+    return Results.Ok();
+});
 
 app.MapGet("/members", (MemberStore mStore) => Results.Ok(mStore.GetAll()));
 app.MapGet("/members/{memberId}", (string memberId, MemberStore mStore) => Results.Ok(mStore.GetById(memberId)));
@@ -55,7 +66,7 @@ app.MapPost("/members/{memberId}/groups/{groupId}/made-contribution", (
 {
     var member = mStore.GetById(memberId);
     var group = gStore.GetById(groupId);
-    var contrId = cStore.Create(request.name, request.spent, memberId, groupId);
+    var contrId = cStore.Create(request.name, request.spent, memberId, groupId, group.CurrentPeriod);
     var contributionCreated = cStore.GetById(contrId);
     group.AddContribution(contributionCreated);
 });
@@ -118,9 +129,9 @@ public sealed class ContributionStore
             : contribution;
     }
 
-    public string Create(string name, float spent, string memberId, string groupId)
+    public string Create(string name, float spent, string memberId, string groupId, Period period)
     {
-        var contribution = Contribution.Create(name, spent, new GroupId(groupId), new MemberId(memberId));
+        var contribution = Contribution.Create(name, spent, new GroupId(groupId), new MemberId(memberId), period);
         var result = _contributions.TryAdd(contribution.Id, contribution);
         return result
             ? contribution.Id.Value

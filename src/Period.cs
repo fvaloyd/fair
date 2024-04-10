@@ -15,6 +15,9 @@ public record struct Period
     public static Period CreateCurrent()
         => CreateFrom(DateTime.Now);
 
+    public static Period Empty()
+        => new(0, 0, 0);
+
     public override readonly string ToString()
         => $"{Day}/{Month}/{Year}";
 }

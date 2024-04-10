@@ -1,5 +1,4 @@
-using Fair;
-using AdjustType = Fair.Adjust;
+using AdjustType = Collaboration.Adjust;
 
 namespace Collaboration;
 
