@@ -79,7 +79,7 @@ app.MapPost("/members/{memberId}/groups/{groupId}/join", (
 {
     var member = mStore.GetById(memberId);
     var group = gStore.GetById(groupId);
-    group.IntegrateMember(member);
+    group.JoinMember(member);
     return Results.Ok();
 });
 

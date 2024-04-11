@@ -36,7 +36,7 @@ public sealed class Group
         _contributions.Add(contribution);
     }
 
-    public void IntegrateMember(Member member)
+    public void JoinMember(Member member)
     {
         _members.Add(member);
     }
