@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<GroupStore>();
 builder.Services.AddSingleton<MemberStore>();
 builder.Services.AddSingleton<ContributionStore>();
+builder.Services.AddSingleton<ContributionTypeStore>();
 builder.Services.AddScoped<Adjuster>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -59,14 +60,15 @@ app.MapPost("/members", (string name, MemberStore mStore) =>
 app.MapPost("/members/{memberId}/groups/{groupId}/made-contribution", (
             string memberId,
             string groupId,
-            MadeContributionRequest request,
+            string contributionTypeId,
+            float spent,
             GroupStore gStore,
             MemberStore mStore,
             ContributionStore cStore) =>
 {
     var member = mStore.GetById(memberId);
     var group = gStore.GetById(groupId);
-    var contrId = cStore.Create(request.name, request.spent, memberId, groupId, group.CurrentPeriod);
+    var contrId = cStore.Create(contributionTypeId, spent, memberId, groupId, group.CurrentPeriod);
     var contributionCreated = cStore.GetById(contrId);
     group.AddContribution(contributionCreated);
 });
@@ -83,11 +85,44 @@ app.MapPost("/members/{memberId}/groups/{groupId}/join", (
     return Results.Ok();
 });
 
+app.MapGet("/contributionsType", (ContributionTypeStore ctStore) => Results.Ok(ctStore.GetAll()));
+app.MapGet("/contributionsType/{contributionTypeId}", (string contributionTypeId, ContributionTypeStore ctStore) => Results.Ok(ctStore.GetById(contributionTypeId)));
+app.MapPost("/contributionsType", (string name, ContributionTypeStore ctStore) =>
+{
+    string id = ctStore.Create(name);
+    return Results.Ok(id);
+});
+
 app.Run();
 
 public record AdjustResponse(string Member, float Amount, string Action);
 
 public record MadeContributionRequest(string name, float spent);
+
+public sealed class ContributionTypeStore
+{
+    private readonly Dictionary<ContributionTypeId, ContributionType> _contributionsType = new();
+
+    public List<ContributionType> GetAll()
+        => _contributionsType.Values.ToList();
+
+    public ContributionType GetById(string contributionTypeId)
+    {
+        _ = _contributionsType.TryGetValue(new(contributionTypeId), out var contributionType);
+        return contributionType == null
+            ? throw new Exception("Could not found the contributionType.")
+            : contributionType;
+    }
+
+    public string Create(string name)
+    {
+        var contributionType = ContributionType.Create(name);
+        var result = _contributionsType.TryAdd(contributionType.Id, contributionType);
+        return result
+            ? contributionType.Id.Value
+            : throw new Exception("Could not create the contributionType.");
+    }
+}
 
 public sealed class GroupStore
 {
@@ -129,9 +164,9 @@ public sealed class ContributionStore
             : contribution;
     }
 
-    public string Create(string name, float spent, string memberId, string groupId, Period period)
+    public string Create(string contributionTypeId, float spent, string memberId, string groupId, Period period)
     {
-        var contribution = Contribution.Create(name, spent, new GroupId(groupId), new MemberId(memberId), period);
+        var contribution = Contribution.Create(new ContributionTypeId(contributionTypeId), spent, new GroupId(groupId), new MemberId(memberId), period);
         var result = _contributions.TryAdd(contribution.Id, contribution);
         return result
             ? contribution.Id.Value

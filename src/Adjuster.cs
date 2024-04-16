@@ -1,15 +1,15 @@
-using AdjustType = Collaboration.Adjust;
+using AdjustType = Collaboration.Adjustment;
 
 namespace Collaboration;
 
 public sealed class Adjuster
 {
-    public List<Adjust> Adjust(Group group)
+    public List<Adjustment> Adjust(Group group)
     {
         if (group.Contributions.Count == 0)
-            return Enumerable.Empty<Adjust>().ToList();
+            return Enumerable.Empty<Adjustment>().ToList();
 
-        List<Adjust> adjusts = new();
+        List<Adjustment> adjusts = new();
 
         float fairGoal = CalcFairGoal(group);
 

@@ -1,16 +1,16 @@
 namespace Collaboration;
 
-public sealed class Adjust
+public sealed class Adjustment
 {
     public GroupId GroupId { get; }
     public MemberId MemberId { get; }
     public float Amount { get; }
     public AdjustAction Action { get; }
 
-    private Adjust(GroupId groupId, MemberId memberId, float amount, AdjustAction action)
+    private Adjustment(GroupId groupId, MemberId memberId, float amount, AdjustAction action)
         => (GroupId, MemberId, Amount, Action) = (groupId, memberId, amount, action);
 
-    public static Adjust Create(GroupId groupId, MemberId memberId, float amount, AdjustAction action)
+    public static Adjustment Create(GroupId groupId, MemberId memberId, float amount, AdjustAction action)
         => new(groupId, memberId, amount, action);
 }
 
