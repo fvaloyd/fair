@@ -84,6 +84,15 @@ app.MapPost("/members/{memberId}/groups/{groupId}/join", (
     group.JoinMember(member);
     return Results.Ok();
 });
+app.MapGet("/members/{memberId}/groups/{groupId}/contributions/{contributionTypeId}", (
+    string memberId,
+    string groupId,
+    string contributionTypeId,
+    GroupStore gStore) =>
+{
+    var g = gStore.GetById(groupId);
+    return Results.Ok(g.GetSpecContributionsByMember(new MemberId(memberId), new ContributionTypeId(contributionTypeId)));
+});
 
 app.MapGet("/contributionsType", (ContributionTypeStore ctStore) => Results.Ok(ctStore.GetAll()));
 app.MapGet("/contributionsType/{contributionTypeId}", (string contributionTypeId, ContributionTypeStore ctStore) => Results.Ok(ctStore.GetById(contributionTypeId)));

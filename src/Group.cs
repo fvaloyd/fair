@@ -46,6 +46,11 @@ public sealed class Group
 
     public void StartNewPeriod()
         => CurrentPeriod = Period.CreateCurrent();
+
+    public List<Contribution> GetSpecContributionsByMember(MemberId memberId, ContributionTypeId contributionTypeId)
+        => _contributions.Where(c => c.MemberId == memberId)
+                         .Where(c => c.ContributionTypeId == contributionTypeId)
+                         .ToList();
 }
 
 public sealed record GroupId(string Value);
