@@ -1,3 +1,8 @@
+using Collaboration.Members;
+using Collaboration.Adjusters;
+using Collaboration.Contributions;
+using Collaboration.Groups;
+
 namespace Collaboration.Tests;
 
 public class AdjusterTests

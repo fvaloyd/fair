@@ -1,4 +1,7 @@
-namespace Collaboration;
+using Collaboration.Groups;
+using Collaboration.Members;
+
+namespace Collaboration.Adjusters;
 
 public sealed class Adjustment
 {

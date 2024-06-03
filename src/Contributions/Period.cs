@@ -1,4 +1,4 @@
-namespace Collaboration;
+namespace Collaboration.Contributions;
 
 public record struct Period
 {

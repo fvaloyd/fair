@@ -1,6 +1,7 @@
-using AdjustType = Collaboration.Adjustment;
+using Collaboration.Groups;
+using AdjustType = Collaboration.Adjusters.Adjustment;
 
-namespace Collaboration;
+namespace Collaboration.Adjusters;
 
 public sealed class Adjuster
 {

@@ -1,4 +1,4 @@
-namespace Collaboration;
+namespace Collaboration.Members;
 
 public sealed class Member
 {

@@ -1,4 +1,7 @@
-namespace Collaboration;
+using Collaboration.Groups;
+using Collaboration.Members;
+
+namespace Collaboration.Contributions;
 
 public sealed class Contribution
 {
